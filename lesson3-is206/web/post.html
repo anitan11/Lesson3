@@ -1,7 +1,8 @@
+
 <div class="post">
   <div class="post-heading">
     <div class="post-title">
-      <a href='/blogpost/{{p.key}}'>{{p.subject}}</a>
+      <a href='/blogpost?id={{key}}'>{{p.subject}}</a>
     </div>
 
     <div class="post-date">
@@ -13,3 +14,4 @@
     {{p._render_text | safe}}
   </div>
 </div>
+

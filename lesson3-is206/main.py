@@ -33,10 +33,11 @@ class PostDB(db.Model):
 	content = db.TextProperty(required = True)
 	created = db.DateTimeProperty(auto_now_add = True)
 	last_modified = db.DateTimeProperty(auto_now = True)
+	#key = str(key())
 
 	def render(self):
 		self._render_text = self.content.replace('\n', '<br>')
-		return render_str("post.html", p = self)
+		return render_str("post.html", p = self, key = str(self.key()))
 
 class Blog(MainHandler):
     def get(self):
@@ -44,10 +45,13 @@ class Blog(MainHandler):
         self.render('front.html', posts = posts)
 
 class Post(MainHandler):
-	def get(self, post_id):
-		key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+	def get(self):
+		#key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+		key = self.request.get('id')
+		post = db.get(key)
+		#key = int(key)
 		#post = db.get(key)
-		#post = db.get('select * from PostDB where key = key')
+		#post = db.get('select * from PostDB where key_db = key')
 
 		if not post:
 			self.error(404)
@@ -72,7 +76,7 @@ class NewPost(MainHandler):
 			self.render("newpost.html", subject=subject, content=content, error=error)
 
 app = webapp2.WSGIApplication([('/blog', Blog),
-                               ('/blogpost/', Post),
+                               ('/blogpost', Post),
                                ('/blog/newpost', NewPost),
                                ],
                               debug=True)
