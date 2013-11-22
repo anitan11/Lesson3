@@ -44,37 +44,35 @@ class Blog(MainHandler):
         self.render('front.html', posts = posts)
 
 class Post(MainHandler):
-    def get(self, post_id):
-        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-        post = db.get(key)
-		
-		#subject = 
-		#post = db.get('select * from PostDB where subject = subject')
+	def get(self, post_id):
+		key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+		#post = db.get(key)
+		#post = db.get('select * from PostDB where key = key')
 
-        if not post:
-            self.error(404)
-            return
+		if not post:
+			self.error(404)
+			return
 
-        self.render("permalink.html", post = post)
+		self.render("permalink.html", post = post)
 
 class NewPost(MainHandler):
-    def get(self):
-        self.render("newpost.html")
+	def get(self):
+		self.render("newpost.html")
 
-    def post(self):
-        subject = self.request.get('subject')
-        content = self.request.get('content')
+	def post(self):
+		subject = self.request.get('subject')
+		content = self.request.get('content')
 
-        if subject and content:
-            p = PostDB(parent = blog_key(), subject = subject, content = content)
-            p.put()
-            self.redirect('/blog')
-        else:
-            error = "subject and content, please!"
-            self.render("newpost.html", subject=subject, content=content, error=error)
+		if subject and content:
+			p = PostDB(parent = blog_key(), subject = subject, content = content)
+			p.put()
+			self.redirect('/blog')
+		else:
+			error = "subject and content, please!"
+			self.render("newpost.html", subject=subject, content=content, error=error)
 
-app = webapp2.WSGIApplication([('/blog/?', Blog),
-                               ('/blog/post?id=([0-9]+)', Post),
+app = webapp2.WSGIApplication([('/blog', Blog),
+                               ('/blogpost/', Post),
                                ('/blog/newpost', NewPost),
                                ],
                               debug=True)
