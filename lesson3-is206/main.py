@@ -54,10 +54,9 @@ class Post(MainHandler):
 		#post = db.get('select * from PostDB where key_db = key')
 
 		if not post:
-			self.error(404)
-			return
-
-		self.render("permalink.html", post = post)
+			self.redirect('/blog')
+			
+		return self.render("permalink.html", post = post)
 
 class NewPost(MainHandler):
 	def get(self):
